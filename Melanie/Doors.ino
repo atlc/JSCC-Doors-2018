@@ -26,6 +26,7 @@ static void warningLights() {
     // Lights up the first ring
     for(int index = 0; index < 12; index++) {
         warningLightStrip.setPixelColor(index, 64,0,0); // Might be too bright for power source, will test after getting boards
+        warningLightStrip.setPixelColor(index+12, 0);   // Clears ring 2
     }
     warningLightStrip.show();
     delay(250);
@@ -33,6 +34,7 @@ static void warningLights() {
     // Lights up the second ring
     for(int index = 12; index < 24; index++) {
         warningLightStrip.setPixelColor(index, 64,0,0); // Might be too bright for power source, will test after getting boards
+        warningLightStrip.setPixelColor(index-12, 0);   // Clears ring 1
     }
     warningLightStrip.show();
     delay(250);
