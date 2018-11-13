@@ -1,6 +1,4 @@
 #include <Adafruit_NeoPixel.h>  // Adafruit.com's library for using Neopixels
-#include <cstdlib>              // For using random
-#include <ctime>                // Using time to seed random
 
 #define PIN    6        // Data is transmitted from Data Pin #6 on the Arduino board
 #define NUM_LEDs 26     // 26 LEDs, one per letter
@@ -24,6 +22,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDs, PIN, NEO_GRB + NEO_KHZ800)
 
 void setup() {
     strip.begin();
+    randomSeed(analogRead(0));
 }
 
 void loop() {
@@ -36,11 +35,10 @@ void loop() {
 }
 
 static void randomizeLights() {
-    srand((int)time(0));
-    for(int index = 0; index < NUM_LEDs; i++) {
-        int r = (rand() % BRIGHTNESS) + 1;
-        int g = (rand() % BRIGHTNESS) + 1;
-        int b - (rand() % BRIGHTNESS) + 1;
+    for(int index = 0; index < NUM_LEDs; index++) {
+        int r = random(BRIGHTNESS);
+        int g = random(BRIGHTNESS);
+        int b = random(BRIGHTNESS);
         strip.setPixelColor(index, r, g, b);
     }
     strip.show();
@@ -51,7 +49,7 @@ static void spellJeffState() {
     int J = 15, E = 4, F = 5, S = 18, T = 19, A = 0;
     int jeffState[9] = { J, E, F, F, S, T, A, T, E };
 
-    for(int index = 0; index < sizeof(jeffState)/sizeof(jeffState[0]); i++) {
+    for(int index = 0; index < sizeof(jeffState)/sizeof(jeffState[0]); index++) {
         strip.setPixelColor(jeffState[index], 255, 0, 0);
         strip.show();
         delay(95);
