@@ -2,10 +2,13 @@
 
 #define PIN    6        // Data is transmitted from Data Pin #6 on the Arduino board
 #define NUM_LEDs 26     // 26 LEDs, one per letter
-#define BRIGHTNESS 64   // Out of 255, this is used to adjust light level since 26 LEDs will all be drawing power at once
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDs, PIN, NEO_GRB + NEO_KHZ800); // Initialize the Neopixel strip
 
 /* In Stranger Things, the lights running across the letters are placed in a 'Z' pattern
+ * 
+ * This means the alphabet is logically laid out with the second row flipped like:
+ *  
+ *  A B C D E F G H ||| Q P O N M L K J I ||| R S T U V W X Y Z
  * 
  * Letters    | Indices |  Quantity LEDs 
  * --------------------------------------
@@ -14,10 +17,6 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDs, PIN, NEO_GRB + NEO_KHZ800)
  *  R - Z     [ 17 - 25 ]       9
  * --------------------------------------
  * 
- * This means the alphabet is laid out with the second row flipped like:
- *          A   B   C   D   E   F   G   H 
- *        Q   P   O   N   M   L   K   J   I 
- *        R   S   T   U   V   W   X   Y   Z
 */
 
 void setup() {
@@ -26,39 +25,39 @@ void setup() {
 }
 
 void loop() {
-    clearAll();
+    strip.clear();
     randomizeLights();
     delay(10000);
-    clearAll();
+    strip.clear();
     spellJeffState();
     delay(5000);
 }
 
 static void randomizeLights() {
+    uint32_t red = strip.Color(128,0,0);
+    uint32_t blue = strip.Color(0,0,128);
+    uint32_t green = strip.Color(0,128,0);
+    uint32_t orange = strip.Color(90,50,0);
+    uint32_t purple = strip.Color(64,0,64);
+
+    uint32_t colors[] = { red, blue, green, orange, purple };
+    
     for(int index = 0; index < NUM_LEDs; index++) {
-        int r = random(BRIGHTNESS);
-        int g = random(BRIGHTNESS);
-        int b = random(BRIGHTNESS);
-        strip.setPixelColor(index, r, g, b);
+        strip.setPixelColor(index, colors[random(5)]);
     }
     strip.show();
 }
 
 static void spellJeffState() {
     // These are the indexes of the array where each letter used to spell "Jeff State" is located
-    int J = 15, E = 4, F = 5, S = 18, T = 19, A = 0;
-    int jeffState[9] = { J, E, F, F, S, T, A, T, E };
+    int J = 15, E = 4, F = 5, S = 18, T = 19, A = 0, space = 27;
+    // Creates an integer array where the above indexes are used to spell Jeff State
+    int jeffState[] = { J, space, E, space, F, space, F, space, space, S, space, T, space, A, space, T, space, E };
 
     for(int index = 0; index < sizeof(jeffState)/sizeof(jeffState[0]); index++) {
         strip.setPixelColor(jeffState[index], 255, 0, 0);
         strip.show();
-        delay(95);
-    }
-}
-
-static void clearAll() {
-    int index = 0;
-    while(index++ < NUM_LEDs) {
-        strip.setPixelColor(index, 0);
+        delay(400);
+        strip.clear();
     }
 }
